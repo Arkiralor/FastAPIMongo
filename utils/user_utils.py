@@ -18,12 +18,11 @@ class UserModelUtils:
     async def create_user(cls, data:dict=None, *args, **kwargs):
         resp = Resp()
 
-        username = data.get("username")
         email = data.get("email")
-        existing_users = await cls.find_user(username=username, email=email)
+        existing_users = await cls.find_user(email=email)
         if existing_users:
             resp.error = "User Exists."
-            resp.message = f"User with username: '{username}' and email: '{email}' already exists."
+            resp.message = f"User with email: '{email}' already exists."
             resp.data = data
             resp.status_code = status.HTTP_400_BAD_REQUEST
 
@@ -52,14 +51,6 @@ class UserModelUtils:
             logger.warn(resp.message)
 
             return resp
-        
-        
-        created_user["date_of_joining"] = created_user.get("date_of_joining").strftime("%Y-%m-%dT%H:%M:%S %Z%z")
-        if "password" in created_user.keys():
-            del created_user["password"]
-        if created_user.get("regnal_number") and created_user.get("regnal_number") != 0:
-            created_user["regnal_number"] = GlobalConstants.REGNAL_NUMBERS.get(created_user.get('regnal_number'))
-
 
         resp.message = f"User {data.get('username')} created for email: {data.get('email')}."
         resp.data = created_user
@@ -69,7 +60,7 @@ class UserModelUtils:
         return resp
     
     @classmethod
-    async def find_user(cls, username:str=None, email:str=None, *args, **kwargs)->dict:
+    async def find_user(cls, pk:str=None, username:str=None, email:str=None, *args, **kwargs)->dict:
         if username and not email:
             user = await db[UserModelChoices.COLLECTION].find_one(
                 {
@@ -106,8 +97,6 @@ class UserModelUtils:
         if not list_size:
             list_size = cls.DEFAULT_LIST_SIZE
         users = await db[UserModelChoices.COLLECTION].find().to_list(list_size)
-        for u in users:
-            u["date_of_joining"] = u.get("date_of_joining").strftime("%Y-%m-%dT%H:%M:%S %Z%z")
 
         resp.data = users
         resp.status_code = status.HTTP_200_OK

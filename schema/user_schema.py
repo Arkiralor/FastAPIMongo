@@ -81,8 +81,12 @@ class ShowUserSchema(BaseModel):
     username:str
     email:str
     first_name:Optional[str]
-    midlle_name:Optional[List[str]]
+    middle_name:Optional[List[str]]
     last_name:Optional[str]
     regnal_number:Optional[int]
     date_of_birth:Optional[date]
     date_of_joining:Optional[datetime]
+
+class UserLogin(BaseModel):
+    email:EmailStr
+    password:str

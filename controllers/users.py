@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, status, Body
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
@@ -15,7 +17,7 @@ router = APIRouter(
     tags=['users']
 )
 
-@router.get("/all/")
+@router.get("/all/", response_model=List[ShowUserSchema], status_code=status.HTTP_200_OK)
 async def get_all_users(current_user: ShowUserSchema = Depends(get_current_user)):
     active_user:ShowUserSchema = await UserModelUtils.find_user(email=current_user.email)
 
@@ -29,12 +31,9 @@ async def get_all_users(current_user: ShowUserSchema = Depends(get_current_user)
             detail=resp.message
         )
     
-    return JSONResponse(
-        content=resp.data,
-        status_code=resp.status_code
-    )
+    return resp.data
 
-@router.post("/signup/")
+@router.post("/signup/", response_model=ShowUserSchema, status_code=status.HTTP_201_CREATED)
 async def create_user(user:RegisterUserSchema=Body(...)):
     user = jsonable_encoder(user)
     resp = await UserModelUtils.create_user(data=user)
@@ -45,7 +44,4 @@ async def create_user(user:RegisterUserSchema=Body(...)):
             detail=resp.message
         )
 
-    return JSONResponse(
-            content=resp.data,
-            status_code=resp.status_code
-        )
+    return resp.data
