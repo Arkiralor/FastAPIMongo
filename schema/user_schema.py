@@ -78,6 +78,7 @@ class UpdateUserSchema(BaseModel):
 
 
 class ShowUserSchema(BaseModel):
+    id:str=Field(alias="_id", description="User's unique ObjectId as defined as the DB.")
     username:str
     email:str
     first_name:Optional[str]
@@ -86,6 +87,14 @@ class ShowUserSchema(BaseModel):
     regnal_number:Optional[int]
     date_of_birth:Optional[date]
     date_of_joining:Optional[datetime]
+
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {
+            ObjectId: str,
+            date: str,
+            datetime: str
+        }
 
 class UserLogin(BaseModel):
     email:EmailStr
