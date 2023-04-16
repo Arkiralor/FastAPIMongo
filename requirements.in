@@ -1,0 +1,12 @@
+autopep8
+dataclasses
+fastapi
+motor
+# mongoengine
+passlib[bcrypt]
+pydantic[email]
+python-dotenv
+python-jose[cryptography]
+pymongo
+requests
+uvicorn[standard]
