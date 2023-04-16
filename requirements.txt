@@ -73,6 +73,8 @@ python-dotenv==1.0.0
     #   uvicorn
 python-jose[cryptography]==3.3.0
     # via -r requirements.in
+python-multipart==0.0.6
+    # via -r requirements.in
 pyyaml==6.0
     # via uvicorn
 requests==2.28.2

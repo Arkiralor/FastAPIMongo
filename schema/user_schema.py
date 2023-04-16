@@ -15,7 +15,7 @@ class RegisterUserSchema(BaseModel):
     password: str = Field(..., description="User's password, used for authentication.")
 
     first_name: Optional[str] = Field(..., description="User's IRL legal first name.")
-    middle_name: Optional[List[str]] = Field(..., min_items=1, max_items=16, description="User's IRL legal middle name(s).")
+    middle_name: Optional[List[str]] = Field(..., min_items=0, max_items=16, description="User's IRL legal middle name(s).")
     last_name: Optional[str] = Field(..., description="User's IRL legal last/sur/family name.")
     regnal_number: Optional[int] = Field(...)
     date_of_birth: Optional[date] = Field(...)
