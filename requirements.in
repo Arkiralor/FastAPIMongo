@@ -2,7 +2,6 @@ autopep8
 dataclasses
 fastapi
 motor
-# mongoengine
 passlib[bcrypt]
 pydantic[email]
 python-dotenv
