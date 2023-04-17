@@ -3,6 +3,7 @@ from fastapi.exceptions import HTTPException
 from fastapi.params import Depends
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
+from auth.schema import Token
 from utils.authentication_utils import AutheticationUtils
 
 router = APIRouter(
@@ -10,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.post("/login/", status_code=status.HTTP_200_OK)
+@router.post("/login/", status_code=status.HTTP_200_OK, response_model=Token)
 async def login_controller(request: OAuth2PasswordRequestForm=Depends()):
     email = request.username
     password = request.password
@@ -18,9 +19,6 @@ async def login_controller(request: OAuth2PasswordRequestForm=Depends()):
     resp = await AutheticationUtils.login(email=email, password=password)
 
     if resp.error:
-        raise HTTPException(
-            status_code=resp.status_code,
-            detail=resp.message
-        )
+        raise resp.exception()
     
     return resp.data

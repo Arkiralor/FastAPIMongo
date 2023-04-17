@@ -41,7 +41,10 @@ class AutheticationUtils:
         )
 
         resp.message = f"User: {email} authenticated successfully."
-        resp.data = access_token
+        resp.data = {
+            "access_token": access_token,
+            "token_type": "Bearer"
+        }
         resp.status_code = status.HTTP_200_OK
 
         return resp

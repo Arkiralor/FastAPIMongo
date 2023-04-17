@@ -1,3 +1,4 @@
+from fastapi.exceptions import HTTPException
 from fastapi.responses import Response
 
 class Resp:
@@ -37,6 +38,12 @@ class Resp:
             content=f"{self.error.upper()}:\t{self.message}",
             status_code=self.status_code,
             media_type="text/plain"
+        )
+    
+    def exception(self):
+        return HTTPException(
+            status_code=self.status_code,
+            detail=f"{self.error.upper()}:\t{self.message}"
         )
     
 
