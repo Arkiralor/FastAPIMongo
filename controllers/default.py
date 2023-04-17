@@ -22,9 +22,7 @@ async def index():
 
 @router.get("/config/", response_model=Settings, status_code=status.HTTP_200_OK)
 async def read_config(current_user: ShowUserSchema = Depends(get_current_user)):
-    active_user:dict = await UserModelUtils.find_user(email=current_user.email)
-    active_user:ShowUserSchema = ShowUserSchema(**active_user)
-    if not active_user.user_type == UserModelChoices.admin:
+    if not current_user.user_type == UserModelChoices.admin:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Only administrators can view this data."
@@ -33,14 +31,12 @@ async def read_config(current_user: ShowUserSchema = Depends(get_current_user)):
 
 @router.get("/database/dump", response_model=DatabaseDumpSchema, status_code=status.HTTP_202_ACCEPTED)
 async def dump_database(current_user: ShowUserSchema = Depends(get_current_user)):
-    active_user:dict = await UserModelUtils.find_user(email=current_user.email)
-    active_user_obj:ShowUserSchema = ShowUserSchema(**active_user)
-    if not active_user_obj.user_type == UserModelChoices.admin:
+    if not current_user.user_type == UserModelChoices.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Only administrators can view this data."
         )
-    users = await UserModelUtils.list_all(user=active_user, list_size=10_000)
+    users = await UserModelUtils.list_all(user=current_user, list_size=10_000)
     if users.error:
         raise users.exception()
     

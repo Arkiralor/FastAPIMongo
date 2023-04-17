@@ -20,11 +20,9 @@ router = APIRouter(
 
 @router.get("/all/", response_model=List[ShowUserSchema], status_code=status.HTTP_200_OK)
 async def get_all_users(current_user: ShowUserSchema = Depends(get_current_user)):
-    active_user: ShowUserSchema = await UserModelUtils.find_user(email=current_user.email)
+    logger.info(f" accessed by {current_user.email}")
 
-    logger.info(f" accessed by {active_user.get('email')}")
-
-    resp = await UserModelUtils.list_all(user=active_user)
+    resp = await UserModelUtils.list_all(user=current_user)
 
     if resp.error:
         raise resp.exception()
@@ -45,9 +43,4 @@ async def create_user(user: RegisterUserSchema = Body(...)):
 
 @router.get("/self/", response_model=ShowUserSchema, status_code=status.HTTP_200_OK)
 async def get_self_user(current_user: ShowUserSchema = Depends(get_current_user)):
-    resp = await UserModelUtils.show_self(auth_user=current_user)
-
-    if resp.error:
-        raise resp.exception()
-
-    return resp.data
+    return current_user
