@@ -16,7 +16,7 @@ class UserModelUtils:
     DEFAULT_LIST_SIZE:int = 10_000
 
     @classmethod
-    async def create_user(cls, data:dict=None, *args, **kwargs):
+    async def create_user(cls, data:dict=None, user_type:str=None, *args, **kwargs):
         resp = Resp()
 
         email = data.get("email")
@@ -31,9 +31,17 @@ class UserModelUtils:
 
             return resp
 
+        if not user_type:
+            data["user_type"] = UserModelChoices.user
+        else:
+            data["user_type"] = user_type
 
         data["password"] = Hashing.bcrypt(password=data.get('password'))
         data["date_of_joining"] = datetime.now()
+        if not data.get("is_active"):
+            data["is_active"] = True
+        if not data.get("regnal_number") or data.get("regnal_number") == 0:
+            data["regnal_number"] = 1
 
 
         new_user = await db[UserModelChoices.COLLECTION].insert_one(data)

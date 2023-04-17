@@ -96,6 +96,8 @@ class ShowUserSchema(BaseModel):
     regnal_number: Optional[int]
     date_of_birth: Optional[date]
     date_of_joining: Optional[datetime]
+    is_active: Optional[bool]
+    user_type: Optional[str]
 
     class Config:
         arbitrary_types_allowed = True
