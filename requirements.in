@@ -1,4 +1,5 @@
 autopep8
+boto3
 dataclasses
 fastapi
 motor

@@ -9,6 +9,7 @@ class Settings(BaseSettings):
 
     APP_NAME: str
     APP_URI: str
+    ENV_TYPE:str
 
     SECRET_KEY: str
     ALGORITHM: str
@@ -22,6 +23,11 @@ class Settings(BaseSettings):
     MONGO_PORT:str
     MONGO_USER:Optional[str]
     MONGO_PASSWORD:Optional[str]
+
+    AWS_ACCESS_KEY:str
+    AWS_SECRET_ACCESS_KEY:str
+    AWS_REGION_NAME:str
+
     BASE_PATH = Path(__file__).resolve().parent.parent
 
     logging.config.fileConfig(path.join(BASE_PATH, "settings", "logging.conf"), disable_existing_loggers=False)
