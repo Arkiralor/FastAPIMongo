@@ -17,9 +17,11 @@ def get_current_user(token:str = Depends(oauth2_scheme)):
     )
 
     try:
+        
         token_data = verify_token(token=token)
         user_dict = UserModelUtils.get_user(email=token_data.email)
         user_obj = ShowUserSchema(**user_dict)
+    
         return user_obj
     except Exception:
         raise credentials_exception

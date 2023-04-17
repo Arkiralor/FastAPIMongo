@@ -41,3 +41,4 @@ class GlobalConstants:
         24: "XXIV",
         25: "XXV"
     }
+
