@@ -4,6 +4,7 @@ from fastapi import status
 
 from auth.hashing import Hashing
 from database import db
+from database.direct_driver import py_db
 from settings.constants import GlobalConstants
 from schema.user_schema import ShowUserSchema
 from schema.user_choices import UserModelChoices
@@ -11,12 +12,13 @@ from templates.func_responses import Resp
 
 from utils import logger
 
+
 class UserModelUtils:
 
-    DEFAULT_LIST_SIZE:int = 10_000
+    DEFAULT_LIST_SIZE: int = 10_000
 
     @classmethod
-    async def create_user(cls, data:dict=None, user_type:str=None, *args, **kwargs):
+    async def create_user(cls, data: dict = None, user_type: str = None, *args, **kwargs):
         resp = Resp()
 
         email = data.get("email")
@@ -43,7 +45,6 @@ class UserModelUtils:
         if not data.get("regnal_number") or data.get("regnal_number") == 0:
             data["regnal_number"] = 1
 
-
         new_user = await db[UserModelChoices.COLLECTION].insert_one(data)
         created_user = await db[UserModelChoices.COLLECTION].find_one(
             {
@@ -67,9 +68,47 @@ class UserModelUtils:
 
         logger.info(resp.message)
         return resp
-    
+
     @classmethod
-    async def find_user(cls, pk:str=None, username:str=None, email:str=None, *args, **kwargs)->dict:
+    def get_user(cls, pk: str = None, email: str = None) -> dict:
+        """
+        Alternate method to get a user without AsyncIo.
+        """
+        if not pk and not email:
+            return None
+
+        if not pk and email:
+            user = py_db[UserModelChoices.COLLECTION].find_one(
+                {
+                    "$and": [
+                        {
+                            "email": email
+                        },
+                        {
+                            "is_active": True
+                        }
+                    ]
+                }
+            )
+        elif pk and not email:
+            user = py_db[UserModelChoices.COLLECTION].find_one(
+                {
+                    "$and": [
+                        {
+                            "email": email
+                        },
+                        {
+                            "is_active": True
+                        }
+                    ]
+                }
+            )
+        else:
+            user = None
+        return user
+
+    @classmethod
+    async def find_user(cls, pk: str = None, username: str = None, email: str = None, *args, **kwargs) -> dict:
         if not pk and username and not email:
             user = await db[UserModelChoices.COLLECTION].find_one(
                 {
@@ -99,17 +138,18 @@ class UserModelUtils:
             )
 
         return user
-    
+
     @classmethod
-    async def list_all(cls, user=None, list_size:int=None):
+    async def list_all(cls, user: ShowUserSchema = None, list_size: int = None):
         resp = Resp()
-        if not user.get("_id"):
+
+        if not user or not user.id:
             resp.error = "Unauthorised"
             resp.message = "You need to be logged-in to view this."
             resp.status_code = status.HTTP_401_UNAUTHORIZED
 
             return resp
-        
+
         if not list_size:
             list_size = cls.DEFAULT_LIST_SIZE
         users = await db[UserModelChoices.COLLECTION].find().to_list(list_size)
@@ -120,7 +160,7 @@ class UserModelUtils:
         return resp
 
     @classmethod
-    async def show_self(cls, auth_user:ShowUserSchema, *args, **kwargs):
+    async def show_self(cls, auth_user: ShowUserSchema, *args, **kwargs):
         resp = Resp()
         self_user = await cls.find_user(email=auth_user.email)
 
@@ -131,12 +171,10 @@ class UserModelUtils:
 
             logger.warn(resp.message)
             return resp
-        
+
         resp.message = f"User: '{self_user.get('email')}' found."
         resp.data = self_user
         resp.status_code = status.HTTP_200_OK
 
         logger.info(resp.message)
         return resp
-        
-
