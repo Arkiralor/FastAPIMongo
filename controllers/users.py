@@ -17,31 +17,37 @@ router = APIRouter(
     tags=['users']
 )
 
+
 @router.get("/all/", response_model=List[ShowUserSchema], status_code=status.HTTP_200_OK)
 async def get_all_users(current_user: ShowUserSchema = Depends(get_current_user)):
-    active_user:ShowUserSchema = await UserModelUtils.find_user(email=current_user.email)
+    active_user: ShowUserSchema = await UserModelUtils.find_user(email=current_user.email)
 
     logger.info(f" accessed by {active_user.get('email')}")
 
     resp = await UserModelUtils.list_all(user=active_user)
 
     if resp.error:
-        raise HTTPException(
-            status_code=resp.status_code,
-            detail=resp.message
-        )
-    
+        raise resp.exception()
+
     return resp.data
 
+
 @router.post("/signup/", response_model=ShowUserSchema, status_code=status.HTTP_201_CREATED)
-async def create_user(user:RegisterUserSchema=Body(...)):
+async def create_user(user: RegisterUserSchema = Body(...)):
     user = jsonable_encoder(user)
     resp = await UserModelUtils.create_user(data=user)
 
     if resp.error:
-        raise HTTPException(
-            status_code=resp.status_code,
-            detail=resp.message
-        )
+        raise resp.exception()
+
+    return resp.data
+
+
+@router.get("/self/", response_model=ShowUserSchema, status_code=status.HTTP_200_OK)
+async def get_self_user(current_user: ShowUserSchema = Depends(get_current_user)):
+    resp = await UserModelUtils.show_self(auth_user=current_user)
+
+    if resp.error:
+        raise resp.exception()
 
     return resp.data

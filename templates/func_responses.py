@@ -18,6 +18,9 @@ class Resp:
             self.status_code = status_code
 
     def to_json(self):
+        """
+        Method to return the contents of the object as a JSON-like dictionary.
+        """
         if type(self.data) == dict and not self.error:
             return self.data
         
@@ -28,12 +31,19 @@ class Resp:
         }
     
     def to_response(self):
+        """
+        Method to construct a framework `response` from the contents of the object.
+        """
         return Response(
             content=self.to_json(),
             status_code=self.status_code
         )
     
     def text(self):
+        """
+        Method to contrustc a plaintext `response` from the contents of the object.
+        To be used in cases of errors.
+        """
         return Response(
             content=f"{self.error.upper()}:\t{self.message}",
             status_code=self.status_code,
@@ -41,6 +51,11 @@ class Resp:
         )
     
     def exception(self):
+        """
+        Method to contruct a `HttpException` from the contents of the object.
+        To be used in case of errors in FastApi, since it raises exceptions in case of errors and does not
+        return a `HttpResponse`.
+        """
         return HTTPException(
             status_code=self.status_code,
             detail=f"{self.error.upper()}:\t{self.message}"

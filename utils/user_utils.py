@@ -5,6 +5,7 @@ from fastapi import status
 from auth.hashing import Hashing
 from database import db
 from settings.constants import GlobalConstants
+from schema.user_schema import ShowUserSchema
 from schema.user_choices import UserModelChoices
 from templates.func_responses import Resp
 
@@ -61,16 +62,23 @@ class UserModelUtils:
     
     @classmethod
     async def find_user(cls, pk:str=None, username:str=None, email:str=None, *args, **kwargs)->dict:
-        if username and not email:
+        if not pk and username and not email:
             user = await db[UserModelChoices.COLLECTION].find_one(
                 {
                     "username": username
                 }
             )
-        elif not username and email:
+        elif not pk and not username and email:
             user = await db[UserModelChoices.COLLECTION].find_one(
                 {
                     "email": email
+                }
+            )
+
+        elif pk and not username and not email:
+            user = await db[UserModelChoices.COLLECTION].find_one(
+                {
+                    "_id": pk
                 }
             )
 
@@ -103,4 +111,24 @@ class UserModelUtils:
 
         return resp
 
+    @classmethod
+    async def show_self(cls, auth_user:ShowUserSchema, *args, **kwargs):
+        resp = Resp()
+        self_user = await cls.find_user(email=auth_user.email)
+
+        if not self_user:
+            resp.error = "Not Found"
+            resp.message = f"User with email: '{auth_user.email}' not found."
+            resp.status_code = status.HTTP_404_NOT_FOUND
+
+            logger.warn(resp.message)
+            return resp
+        
+        resp.message = f"User: '{self_user.get('email')}' found."
+        resp.data = self_user
+        resp.status_code = status.HTTP_200_OK
+
+        logger.info(resp.message)
+        return resp
+        
 
