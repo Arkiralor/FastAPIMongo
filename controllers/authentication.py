@@ -1,5 +1,4 @@
 from fastapi import APIRouter, status
-from fastapi.exceptions import HTTPException
 from fastapi.params import Depends
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
