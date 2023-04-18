@@ -9,7 +9,7 @@ from settings.constants import GlobalConstants
 from templates.func_responses import Resp
 from settings.config import settings
 
-from utils import logger
+# from utils import logger
 
 class SESEmailUtils:
     """
@@ -44,7 +44,7 @@ class SESEmailUtils:
             EmailAddress=email
         )
 
-        logger.info(f"eMail verification: {res}")
+        # logger.info(f"eMail verification: {res}")
         return True
 
     @classmethod
@@ -60,7 +60,7 @@ class SESEmailUtils:
             resp.data = emails
             resp.status_code = status.HTTP_400_BAD_REQUEST
 
-            logger.warn(resp.message)
+            # logger.warn(resp.message)
 
             return resp
 
@@ -71,7 +71,7 @@ class SESEmailUtils:
                 resp.data = emails
                 resp.status_code = status.HTTP_400_BAD_REQUEST
 
-                logger.warn(resp.message)
+                # logger.warn(resp.message)
 
                 return resp
 
@@ -150,7 +150,7 @@ class SESEmailUtils:
             }
             resp.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
 
-            logger.warn(resp.message)
+            # logger.warn(resp.message)
 
             return resp
 
@@ -230,7 +230,7 @@ class SESEmailUtils:
             }
             resp.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
 
-            logger.warn(resp.message)
+            # logger.warn(resp.message)
 
             return resp
 

@@ -30,7 +30,7 @@ class Settings(BaseSettings):
 
     BASE_PATH = Path(__file__).resolve().parent.parent
 
-    logging.config.fileConfig(path.join(BASE_PATH, "settings", "logging.conf"), disable_existing_loggers=False)
+    # logging.config.fileConfig(path.join(BASE_PATH, "settings", "logging.conf"), disable_existing_loggers=False)
 
     class Config:
         env_file = ".env"

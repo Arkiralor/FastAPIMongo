@@ -2,6 +2,7 @@ autopep8
 boto3
 dataclasses
 fastapi
+httpx
 motor
 passlib[bcrypt]
 pydantic[email]

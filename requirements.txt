@@ -6,6 +6,7 @@
 #
 anyio==3.6.2
     # via
+    #   httpcore
     #   starlette
     #   watchfiles
 autopep8==2.0.2
@@ -19,7 +20,10 @@ botocore==1.29.114
     #   boto3
     #   s3transfer
 certifi==2022.12.7
-    # via requests
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
 cffi==1.15.1
     # via cryptography
 charset-normalizer==3.1.0
@@ -45,13 +49,20 @@ email-validator==1.3.1
 fastapi==0.95.0
     # via -r requirements.in
 h11==0.14.0
-    # via uvicorn
+    # via
+    #   httpcore
+    #   uvicorn
+httpcore==0.17.0
+    # via httpx
 httptools==0.5.0
     # via uvicorn
+httpx==0.24.0
+    # via -r requirements.in
 idna==3.4
     # via
     #   anyio
     #   email-validator
+    #   httpx
     #   requests
 jmespath==1.0.1
     # via
@@ -100,7 +111,10 @@ six==1.16.0
     #   ecdsa
     #   python-dateutil
 sniffio==1.3.0
-    # via anyio
+    # via
+    #   anyio
+    #   httpcore
+    #   httpx
 starlette==0.26.1
     # via fastapi
 tomli==2.0.1

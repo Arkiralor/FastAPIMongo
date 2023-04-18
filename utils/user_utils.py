@@ -10,7 +10,7 @@ from schema.user_schema import ShowUserSchema
 from schema.user_choices import UserModelChoices
 from templates.func_responses import Resp
 
-from utils import logger
+# from utils import logger
 
 
 class UserModelUtils:
@@ -29,7 +29,7 @@ class UserModelUtils:
             resp.data = data
             resp.status_code = status.HTTP_400_BAD_REQUEST
 
-            logger.warn(resp.message)
+            # logger.warn(resp.message)
 
             return resp
 
@@ -58,7 +58,7 @@ class UserModelUtils:
             resp.data = data
             resp.status_code = status.HTTP_400_BAD_REQUEST
 
-            logger.warn(resp.message)
+            # logger.warn(resp.message)
 
             return resp
 
@@ -66,7 +66,7 @@ class UserModelUtils:
         resp.data = created_user
         resp.status_code = status.HTTP_201_CREATED
 
-        logger.info(resp.message)
+        # logger.info(resp.message)
         return resp
 
     @classmethod
@@ -169,12 +169,12 @@ class UserModelUtils:
             resp.message = f"User with email: '{auth_user.email}' not found."
             resp.status_code = status.HTTP_404_NOT_FOUND
 
-            logger.warn(resp.message)
+            # logger.warn(resp.message)
             return resp
 
         resp.message = f"User: '{self_user.get('email')}' found."
         resp.data = self_user
         resp.status_code = status.HTTP_200_OK
 
-        logger.info(resp.message)
+        # logger.info(resp.message)
         return resp

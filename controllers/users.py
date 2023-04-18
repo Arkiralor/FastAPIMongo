@@ -10,7 +10,7 @@ from auth.oauth_2 import get_current_user
 from schema.user_schema import ShowUserSchema, RegisterUserSchema
 from utils.user_utils import UserModelUtils
 
-from controllers import logger
+# from controllers import logger
 
 router = APIRouter(
     prefix='/user',
@@ -20,7 +20,7 @@ router = APIRouter(
 
 @router.get("/all/", response_model=List[ShowUserSchema], status_code=status.HTTP_200_OK)
 async def get_all_users(current_user: ShowUserSchema = Depends(get_current_user)):
-    logger.info(f" accessed by {current_user.email}")
+    # logger.info(f" accessed by {current_user.email}")
 
     resp = await UserModelUtils.list_all(user=current_user)
 
