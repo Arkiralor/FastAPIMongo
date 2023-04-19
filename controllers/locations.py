@@ -16,8 +16,9 @@ router = APIRouter(
     tags=['locations']
 )
 
+
 @router.get("/country/{term}/{term_type}/", response_model=CountrySchema, status_code=status.HTTP_200_OK)
-async def get_one_country(term:str, term_type:str, user:ShowUserSchema=Depends(get_current_user)):
+async def get_one_country(term: str, term_type: str, user: ShowUserSchema = Depends(get_current_user)):
     if term_type == "id":
         resp = await CountryUtils.get(id=term)
     elif term_type == "name":
@@ -26,38 +27,72 @@ async def get_one_country(term:str, term_type:str, user:ShowUserSchema=Depends(g
         resp = await CountryUtils.get(official_name=term)
     else:
         resp = {
-                "_id": None,
-                "name": None,
-                "official_name": None,
-                "country_code": None,
-                "internet_tld": None,
-                "isd": None
-            }
-        
+            "_id": None,
+            "name": None,
+            "official_name": None,
+            "country_code": None,
+            "internet_tld": None,
+            "isd": None
+        }
+
     if not resp:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Country not found."
         )
-        
+
     return resp
 
+
 @router.post("/country/add/", response_model=CountrySchema, status_code=status.HTTP_201_CREATED)
-async def create_country(data:CountrySchema = Body(...), user:ShowUserSchema=Depends(get_current_user)):
+async def create_country(data: CountrySchema = Body(...), user: ShowUserSchema = Depends(get_current_user)):
     data = jsonable_encoder(data)
     resp = await CountryUtils.create(data=data, user=user)
 
     if resp.error:
         raise resp.exception()
-    
+
     return resp.data
 
+
+@router.put("/country/update/{pk}/", response_model=CountrySchema, status_code=status.HTTP_200_OK)
+async def update_country(data: UpdateCountrySchema = Body(...), user: ShowUserSchema = Depends(get_current_user), pk: str = None):
+    resp = await CountryUtils.update(data=data, user=user, pk=pk)
+
+    if resp.error:
+        raise resp.exception()
+
+    return resp.data
+
+
+@router.get("/state/{term}/{term_type}/", response_model=ShowStateProvinceSchema, status_code=status.HTTP_200_OK)
+async def get_one_state(term: str, term_type: str, user: ShowUserSchema = Depends(get_current_user)):
+    if term_type == "id":
+        resp = await StateProvinceUtils.get(pk=term)
+    elif term_type == "name":
+        resp = await StateProvinceUtils.get(name=term)
+    else:
+        resp = {
+            "_id": None,
+            "name": None,
+            "state_code": None,
+            "country": None
+        }
+
+    if not resp:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="State/Province not found."
+        )
+    return resp
+
+
 @router.post("/state/add/", response_model=ShowStateProvinceSchema, status_code=status.HTTP_201_CREATED)
-async def create_state(data:CreateStateProvinceSchema = Body(...), user:ShowUserSchema=Depends(get_current_user)):
+async def create_state(data: CreateStateProvinceSchema = Body(...), user: ShowUserSchema = Depends(get_current_user)):
     data = jsonable_encoder(data)
     resp = await StateProvinceUtils.create(data=data, user=user)
 
     if resp.error:
         raise resp.exception()
-    
+
     return resp.data

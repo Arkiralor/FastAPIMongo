@@ -16,8 +16,6 @@ class CountrySchema(BaseModel):
     isd: str = Field(...)
     created: Optional[datetime]
 
-    
-
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
@@ -39,11 +37,11 @@ class CountrySchema(BaseModel):
 
 
 class UpdateCountrySchema(BaseModel):
-    name: str = Field(...)
-    official_name: str = Field(...)
-    country_code: str = Field(...)
-    internet_tld: str = Field(...)
-    isd: str = Field(...)
+    name: str
+    official_name: str
+    country_code: str
+    internet_tld: str
+    isd: str
 
     class Config:
         arbitrary_types_allowed = True
@@ -79,6 +77,7 @@ class CreateStateProvinceSchema(BaseModel):
             }
         }
 
+
 class ShowStateProvinceSchema(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId,
                            alias="_id")
@@ -106,9 +105,9 @@ class ShowStateProvinceSchema(BaseModel):
 
 
 class UpdateStateProvinceSchema(BaseModel):
-    name: str = Field(...)
-    state_code: str = Field(...)
-    country: CountrySchema = Field(...)
+    name: str
+    state_code: str
+    country: CountrySchema
 
     class Config:
         arbitrary_types_allowed = True
